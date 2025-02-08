@@ -5,7 +5,7 @@ import { data } from 'react-router-dom';
 
 export const fetchCartFromServer = createAsyncThunk("cart/fetchCartFromServer", async (token) => {
   try {
-    const response = await axios.get("http://localhost:8080/Cart/viewCart", {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/Cart/viewCart`, {
 
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export const addToCart = createAsyncThunk(
   async ({ productId, quantity, token }) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/Cart/AddtoCart",
+        `${process.env.REACT_APP_API_URL}/Cart/AddtoCart`,
         { productId, quantity },
         {
           headers: {
@@ -37,9 +37,7 @@ export const addToCart = createAsyncThunk(
           },
         }
       );
-      console.log("first", productId)
-      console.log("first", quantity)
-      console.log("first", token)
+     
       return response.data;
     } catch (error) {
       console.error("Error adding to cart:", error);
@@ -53,7 +51,7 @@ export const removeFromCart = createAsyncThunk(
   "cart/removeFromCart",
   async ({ productId, token }) => {
     try {
-      await axios.delete(`http://localhost:8080/Cart/deleteToCart`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/Cart/deleteToCart`, {
         data: productId,
         headers: {
           "Content-Type": "application/json",
@@ -74,7 +72,7 @@ export const increaseQuantity = createAsyncThunk(
   async ({ productId, token }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/Cart/increaseCart`,
+        `${process.env.REACT_APP_API_URL}/Cart/increaseCart`,
         {productId},
         {
           
@@ -97,7 +95,7 @@ export const decreaseQuantity = createAsyncThunk(
   async ({ productId, token }) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/Cart/decreaseCart`,
+        `${process.env.REACT_APP_API_URL}/Cart/decreaseCart`,
         {productId},
         {
            
