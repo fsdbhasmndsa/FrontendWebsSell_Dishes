@@ -305,6 +305,10 @@ const AccountManagement = () => {
             </div>
             <div className="card-body">
               <div className="row g-3">
+              {ListWish.length == 0 && <div className="card shadow-sm border-0 mb-4 d-flex justify-content-center align-items-center " style={{ minHeight: 280 }}>
+                <h5 className="text-muted">Chưa có sản phẩm!</h5>
+                <img src="https://www.lottemart.vn/asset/images/icon-cart-empty.svg" className="img-fluid mt-3 w-25" alt="" />
+              </div>}
                 {ListWish.map((fruit) => (
                   <NavLink
                     to={`/productDetail/${fruit._id}`}
