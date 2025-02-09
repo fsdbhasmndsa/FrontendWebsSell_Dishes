@@ -190,7 +190,7 @@ const AccountManagement = () => {
                       <h6 className="fw-bold text-dark mb-1">
 
                         {ListOrder?.length > 0
-                          ? ListOrder.reduce((total, item) => total + " " + item.name, "Order include:")
+                          ? ListOrder.items.reduce((total, item) => total + " " + item.name, "Order include:")
                           : "Order include: (empty)"
                         }
 
