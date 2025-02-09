@@ -53,21 +53,21 @@ const AccountManagement = () => {
       phonenumber: Yup.string().required("Phone number is required"),
       fullname: Yup.string().required("FullName is required"),
     }),
-    onSubmit: async(values) => {
-     const res =  await axios({url:`${API}/User/UpdateUser`,method:"PUT",data:values, headers:{
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${Token}` // Thêm Bearer Token
-    }})
-    if(res.data.code ==200)
-    {
-      toast.success("Update successful");
-      CallAPIUser()
-      SetSave(true)
-    }
-    else
-    {
-      toast.error("Update failed");
-    }
+    onSubmit: async (values) => {
+      const res = await axios({
+        url: `${API}/User/UpdateUser`, method: "PUT", data: values, headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${Token}` // Thêm Bearer Token
+        }
+      })
+      if (res.data.code == 200) {
+        toast.success("Update successful");
+        CallAPIUser()
+        SetSave(true)
+      }
+      else {
+        toast.error("Update failed");
+      }
     },
   });
 
@@ -143,7 +143,7 @@ const AccountManagement = () => {
                       onChange={formik.handleChange}
                       value={formik.values.phonenumber}
                     />
-                      {formik.errors.phonenumber && <i className="text-danger">{formik.errors.phonenumber}</i>}
+                    {formik.errors.phonenumber && <i className="text-danger">{formik.errors.phonenumber}</i>}
                   </div>
 
                   <div className="mb-3">
@@ -174,6 +174,10 @@ const AccountManagement = () => {
               </h5>
             </div>
             <div className="card-body">
+              {ListOrder.length == 0 && <div className="card shadow-sm border-0 mb-4 d-flex justify-content-center align-items-center " style={{ minHeight: 280 }}>
+                <h5 className="text-muted">Chưa có đơn hàng!</h5>
+                <img src="https://www.lottemart.vn/asset/images/icon-cart-empty.svg" className="img-fluid mt-3 w-25" alt="" />
+              </div>}
               {ListOrder.map((order, index) => {
 
                 return <div key={index}>
@@ -184,7 +188,12 @@ const AccountManagement = () => {
                     </div>
                     <div className="col-md-7">
                       <h6 className="fw-bold text-dark mb-1">
-                        Áo thun tay lỡ form rộng saidboiz khủng long dino
+
+                        {ListOrder?.length > 0
+                          ? ListOrder.reduce((total, item) => total + " " + item.name, "Order include:")
+                          : "Order include: (empty)"
+                        }
+
                       </h6>
                       <p className="text-muted">{new Date(order.createdAt).toLocaleString()}</p>
 
@@ -225,7 +234,7 @@ const AccountManagement = () => {
                     <div className="row align-items-center mb-4 py-3 border-bottom">
                       <div className="mb-3">
                         <p className="mb-2">
-                          <strong>Order ID:</strong> #123456
+                          <strong>Order ID:</strong> {order._id}
                         </p>
                         <p className="mb-2">
                           <strong>Shipping Address:</strong> {order.address}
@@ -279,10 +288,10 @@ const AccountManagement = () => {
               </h5>
             </div>
             <div className="card-body">
-            <div className="card shadow-sm border-0 mb-4 d-flex justify-content-center align-items-center " style={{ minHeight: 280 }}>
-          <h5 className="text-muted">Chưa có Voucher!</h5>
-          <img src="https://www.lottemart.vn/asset/images/icon-cart-empty.svg" className="img-fluid mt-3 w-25" alt="" />
-        </div>
+              <div className="card shadow-sm border-0 mb-4 d-flex justify-content-center align-items-center " style={{ minHeight: 280 }}>
+                <h5 className="text-muted">Chưa có Voucher!</h5>
+                <img src="https://www.lottemart.vn/asset/images/icon-cart-empty.svg" className="img-fluid mt-3 w-25" alt="" />
+              </div>
             </div>
           </div>
         );
@@ -295,68 +304,67 @@ const AccountManagement = () => {
               </h5>
             </div>
             <div className="card-body">
-            <div className="row g-3">
-          {ListWish.map((fruit) => (
-            <NavLink
-              to={`productDetail/${fruit._id}`}
-              style={{ textDecoration: "none" }}
-              key={fruit._id}
-              className="col-12 col-md-4 col-lg-3 d-flex align-items-stretch"
-            >
-              <div
-                className="card flex-row w-100"
-                style={{
-                  borderRadius: "20px",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  backgroundColor: "#fff",
-                  border: "none",
-                }}
-              >
-                <img
-                  src={fruit.imageUrl}
-                  alt={fruit.name}
-                  className="img-fluid"
-                  style={{
-                    width: "140px",
-                    height: "120px",
-                    objectFit: "cover",
-                    borderTopLeftRadius: "20px",
-                    borderBottomLeftRadius: "20px",
-                  }}
-                />
-                <div className="card-body d-flex flex-column justify-content-between">
-                  <div>
-                    <h5 className="fw-bold" style={{ fontSize: "1rem" }}>{fruit.name}</h5>
-                    <p className="text-muted" style={{ fontSize: "0.9rem" }}>120 Calories</p>
-                    <h6 className="text-danger fw-bold" style={{ fontSize: "1.1rem" }}>${fruit.price}</h6>
-                  </div>
-                  <button
-                    className="btn btn-outline-danger btn-sm rounded-circle"
-                    style={{
-                      border: "none",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      alignSelf: "center",
-                    }}
-                    onClick={(event) => {
-                      event.stopPropagation(); // Ngăn NavLink kích hoạt
-                      event.preventDefault(); // Ngăn điều hướng khi bấm vào nút
-                      if(Token)
-                      {
-                        dishPatch(addToCart({productId:fruit,quantity:1,token:Token}))
-                      }
-                      else{
-                        dishPatch(AddItemAction(fruit))
-                      }
-                     
-                    }}
+              <div className="row g-3">
+                {ListWish.map((fruit) => (
+                  <NavLink
+                    to={`/productDetail/${fruit._id}`}
+                    style={{ textDecoration: "none" }}
+                    key={fruit._id}
+                    className="col-12 col-md-4 col-lg-3 d-flex align-items-stretch"
                   >
-                    <i className="bi bi-cart"></i>
-                  </button>
-                </div>
+                    <div
+                      className="card flex-row w-100"
+                      style={{
+                        borderRadius: "20px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                        backgroundColor: "#fff",
+                        border: "none",
+                      }}
+                    >
+                      <img
+                        src={fruit.imageUrl}
+                        alt={fruit.name}
+                        className="img-fluid"
+                        style={{
+                          width: "140px",
+                          height: "120px",
+                          objectFit: "cover",
+                          borderTopLeftRadius: "20px",
+                          borderBottomLeftRadius: "20px",
+                        }}
+                      />
+                      <div className="card-body d-flex flex-column justify-content-between">
+                        <div>
+                          <h5 className="fw-bold" style={{ fontSize: "1rem" }}>{fruit.name}</h5>
+                          <p className="text-muted" style={{ fontSize: "0.9rem" }}>120 Calories</p>
+                          <h6 className="text-danger fw-bold" style={{ fontSize: "1.1rem" }}>${fruit.price}</h6>
+                        </div>
+                        <button
+                          className="btn btn-outline-danger btn-sm rounded-circle"
+                          style={{
+                            border: "none",
+                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                            alignSelf: "center",
+                          }}
+                          onClick={(event) => {
+                            event.stopPropagation(); // Ngăn NavLink kích hoạt
+                            event.preventDefault(); // Ngăn điều hướng khi bấm vào nút
+                            if (Token) {
+                              dishPatch(addToCart({ productId: fruit, quantity: 1, token: Token }))
+                            }
+                            else {
+                              dishPatch(AddItemAction(fruit))
+                            }
+
+                          }}
+                        >
+                          <i className="bi bi-cart"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </NavLink>
+                ))}
               </div>
-            </NavLink>
-          ))}
-        </div>
             </div>
           </div>
         );
