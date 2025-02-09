@@ -71,6 +71,15 @@ const AccountManagement = () => {
     },
   });
 
+  const getOrderSummary = (listOrder) => {
+    return listOrder?.items?.length > 0
+      ? listOrder.items.reduce(
+          (total, item, index) => total + (index > 0 ? ", " : " ") + item.name,
+          "Order include:"
+        )
+      : "Order include: (empty)";
+  };
+
   useEffect(() => {
     CallAPIUser()
     CallAPIGetOrders()
@@ -94,14 +103,14 @@ const AccountManagement = () => {
                   <h5 className="mb-4">User Information</h5>
                   <div className="mb-3 text-start">
                     <p className="mb-2">
-                      <strong>Name:</strong> <span className="text-muted fw-bold">{User.fullname}</span>
+                      <strong>Name:</strong> <span className="text-muted fw-bold">{User?.fullname == "" ? "Chưa có" : User?.fullname}</span>
                     </p>
 
                     <p className="mb-2">
-                      <strong>Phone:</strong> <span className="text-muted fw-bold">{User.phonenumber}</span>
+                      <strong>Phone:</strong> <span className="text-muted fw-bold">{User?.phonenumber == "" ? "Chưa có" : User?.phonenumber}</span>
                     </p>
                     <p className="mb-2">
-                      <strong>Address:</strong> <span className="text-muted">{User.address == "" ? "Chưa có" : User.address}</span>
+                      <strong>Address:</strong> <span className="text-muted">{User?.address == "" ? "Chưa có" : User?.address}</span>
                     </p>
                   </div>
                   <button
@@ -189,10 +198,7 @@ const AccountManagement = () => {
                     <div className="col-md-7">
                       <h6 className="fw-bold text-dark mb-1">
 
-                        {ListOrder?.length > 0
-                          ? ListOrder.items.reduce((total, item) => total + " " + item.name, "Order include:")
-                          : "Order include: (empty)"
-                        }
+                      {getOrderSummary(order)}
 
                       </h6>
                       <p className="text-muted">{new Date(order.createdAt).toLocaleString()}</p>
